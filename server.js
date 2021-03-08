@@ -6,15 +6,13 @@ var io = require("socket.io")(server);
 
 app.use(express.static("public"));
 
-var users = [];
  
 io.on("connection", function (socket) {
  
-    socket.on("user_connected", function (username) {
+    socket.on("live", function (message) {
     
-        users[username] = socket.id;
- 
-        io.emit("user_connected", username);
+        io.emit("live", message);
+        
     });
 });
 
