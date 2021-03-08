@@ -1,0 +1,24 @@
+{
+  "dependencies": {
+    "cookie-parser": "^1.4.5",
+    "ejs": "^3.1.6",
+    "express": "^4.17.1",
+    "express-fileupload": "^1.2.1",
+    "express-session": "^1.17.1",
+    "morgan": "^1.10.0",
+    "peer": "^0.6.1",
+    "redis": "^3.0.2",
+    "socket.io": "^3.1.2",
+    "socks-proxy-agent": "^5.0.0",
+    "uuid": "^3.4.0",
+    "ws": "^7.4.3"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "name": "home",
+  "version": "1.0.0",
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
