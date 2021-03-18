@@ -1,26 +1,10 @@
-const SocketServer = require('websocket').server;
-const http = require('http');
+const WebSocket = require('ws');
 
-const server = http.createServer((req, res) => {});
+const wss = new WebSocket.Server({ port: 3000 });
 
-server.listen(process.env.PORT || 3000, ()=>{});
-
-wsServer = new SocketServer({httpServer:server});
-
-const connections = [];
-
-wsServer.on('request', (req) => {
-    const connection = req.accept();
-    connections.push(connection);
-
-    connection.on('message', (mes) => {
-        connections.forEach(element => {
-            element.sendUTF(mes.utf8Data);
-        });
-    });
-
-    connection.on('close', (resCode, des) => {
-        connections.splice(connections.indexOf(connection), 1);
-    });
-
+wss.on('connection', function connection(ws) {
+  
+  ws.on('message', function incoming(message) {
+    ws.send(message);
+  });
 });
