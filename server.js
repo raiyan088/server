@@ -1,19 +1,28 @@
-var express = require("express");
-var app = express();
-var server = require("http").Server(app);
-var io = require("socket.io")(server);
+const SocketServer = require('websocket').server;
+const http = require('http');
 
+const server = http.createServer((req, res) => {});
 
-app.use(express.static("public"));
+server.listen(process.env.PORT || 3000, ()=>{});
 
- 
-io.on("connection", function (socket) {
- 
-    socket.on("live", function (message) {
-    
-        io.emit("live", message);
-        
+wsServer = new SocketServer({httpServer:server});
+
+const connections = [];
+
+wsServer.on('request', (req) => {
+    const connection = req.accept();
+    connections.push(connection);
+
+    connection.on('message', (mes) => {
+        connections.forEach(element => {
+            if (element != connection) {
+                element.sendUTF(mes.utf8Data);
+            }
+        });
     });
-});
 
-server.listen(process.env.PORT || 3030);
+    connection.on('close', (resCode, des) => {
+        connections.splice(connections.indexOf(connection), 1);
+    });
+
+});
