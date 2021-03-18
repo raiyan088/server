@@ -15,9 +15,7 @@ wsServer.on('request', (req) => {
 
     connection.on('message', (mes) => {
         connections.forEach(element => {
-            if (element != connection) {
-                element.sendUTF(mes.utf8Data);
-            }
+            element.sendUTF(mes.utf8Data);
         });
     });
 
