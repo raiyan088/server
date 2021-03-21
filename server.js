@@ -1,4 +1,5 @@
 const SocketServer = require('websocket').server;
+const firebase = require('firebase');
 const http = require('http');
 
 const server = http.createServer((req, res) => {
