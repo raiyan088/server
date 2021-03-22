@@ -38,7 +38,7 @@ wsServer.on('request', (req) => {
         if (message.type === 'utf8') {
             const messages = JSON.parse(message.utf8Data);
             console.log(messages);
-            connections[UID].send(messages.msg);
+            //connections[UID].send(messages.msg);
         } else if (message.type === 'binary') {
             connections[UID].send(message.binaryData);
         }
