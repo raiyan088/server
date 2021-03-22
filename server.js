@@ -40,7 +40,7 @@ wsServer.on('request', (req) => {
             console.log(messages);
             //connections[UID].send(messages.msg);
         } else if (message.type === 'binary') {
-            connections[UID].send(message.binaryData);
+            //connections[UID].send(message.binaryData);
         }
     });
     
