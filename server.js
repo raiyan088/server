@@ -19,11 +19,7 @@ wsServer.on('request', (req) => {
 
     connection.on('message', (message) => {
         console.log(message);
-        if (message.type === 'utf8') {
-            connection.send(message.utf8Data);
-        } else if (message.type === 'binary') {
-            connection.send(message.binaryData);
-        }
+
     });
     
 });
