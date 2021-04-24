@@ -17,29 +17,9 @@ const connections = {};
 wsServer.on('request', (req) => {
     const connection = req.accept();
     
-    first_slash = req.resource.substring(0, 1);
-    if (first_slash === '/') {
-       index = req.resource.length;
-       UID = req.resource.substring(1, index);
-    } else {
-       UID = req.resource;
-    }
     
-    index = UID.length;
-    last_slash = UID.substring(index-1, index);
-    if (last_slash === '/') {
-       UID = UID.substring(1, index-1);
-    }
-    
-    console.log(UID);
-    connections[UID] = connection;
-
     connection.on('message', (message) => {
-        if (message.type === 'utf8') {
-            connections[UID].send(message.utf8Data);
-        } else if (message.type === 'binary') {
-            connections['raiyan088'].send(message.binaryData);
-        }
+        
     });
     
 });
