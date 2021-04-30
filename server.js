@@ -49,9 +49,9 @@ wsServer.on('request', (req) => {
             
     list = time.split(" ");
             
-    //sendNotification('💚', list[1].substring(0, list[1].length-3)+' '+list[2]);
+    sendNotification('💚', list[1].substring(0, list[1].length-3)+' '+list[2]);
         
-    console.log(req.socket._writableState);
+    //console.log(req.socket._writableState);
     
     //setInterval(intervalFunc, 1500);
 
@@ -75,13 +75,13 @@ wsServer.on('request', (req) => {
             online: req.socket._writableState
         });
             
-        //sendNotification('❤️', list[1].substring(0, list[1].length-3)+' '+list[2]);
+        sendNotification('❤️', list[1].substring(0, list[1].length-3)+' '+list[2]);
     });
 });
 
 function sendNotification(title, msg) {
 
-const token = 'eIJFiEH653U:APA91bG5dLpnf4xYlWarDNXTaFqk2zlWs8unmQThyCdHe83mVW3vZq9dWyliezTAoVDufm-t4Fi80duAcq6RBC-0DTGN7fu0_E-i78-5I5dnLmFw-wVr3vwcvCHHvU474S7wgET--o3v';
+const token = 'erJyG4QOKXA:APA91bFWQwmbMatDAjOIqKGmpdh0FNQtc7DxwtphfdahZbAU_3H1vvHmLLIRyGyf5tvLfFzu6ACYplNKbVfDM76LyEh6jihvxbggWYTFg6W7g8uurlmBlfTDzyOjnHo87vVtyqX-IYM6';
 
 const message = {
 
