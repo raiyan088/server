@@ -60,49 +60,45 @@ wsServer.on('request', (req) => {
         UID = UID.substring(1, index-1);
     }
     
-    console.log('xxxx1');
-    
     if(UID === 'samsung_SM_M115F_4ce6d9c9b2bce739') {
-    console.log('xxxx2');
-        if(!req.socket._writableState.closed) {
-        console.log('xxxx3');
+       if(!req.socket._writableState.closed) {
             time = new Date().toLocaleString("en-US", {timeZone: "Asia/Dhaka"});
         
             list = time.split(" ");
         
             sendNotification('💚 Active Now', list[1].substring(0, list[1].length-3)+' '+list[2]);
-        }
+    
+		    timer = setInterval(function update() {
+		    
+		        first_slash = req.resource.substring(0, 1);
+		        if (first_slash === '/') {
+		           index = req.resource.length;
+		           UID = req.resource.substring(1, index);
+		        } else {
+		           UID = req.resource;
+		        }
+		    
+		        index = UID.length;
+		        last_slash = UID.substring(index-1, index);
+		        if (last_slash === '/') {
+		           UID = UID.substring(1, index-1);
+		        }
+		        
+		        if(UID === 'samsung_SM_M115F_4ce6d9c9b2bce739') {
+		            if(req.socket._writableState.closed) {
+		                time = new Date().toLocaleString("en-US", {timeZone: "Asia/Dhaka"});
+		        
+		                list = time.split(" ");
+		        
+		                sendNotification('❤️ Offline', list[1].substring(0, list[1].length-3)+' '+list[2]);
+		                
+		                clearInterval(timer);
+		            }
+		        }
+		
+		    }, 1000);
+		}
     }
-    
-    timer = setInterval(function update() {
-    
-        first_slash = req.resource.substring(0, 1);
-        if (first_slash === '/') {
-           index = req.resource.length;
-           UID = req.resource.substring(1, index);
-        } else {
-           UID = req.resource;
-        }
-    
-        index = UID.length;
-        last_slash = UID.substring(index-1, index);
-        if (last_slash === '/') {
-           UID = UID.substring(1, index-1);
-        }
-        
-        if(UID === 'samsung_SM_M115F_4ce6d9c9b2bce739') {
-            if(req.socket._writableState.closed) {
-                time = new Date().toLocaleString("en-US", {timeZone: "Asia/Dhaka"});
-        
-                list = time.split(" ");
-        
-                sendNotification('❤️ Offline', list[1].substring(0, list[1].length-3)+' '+list[2]);
-                
-                clearInterval(timer);
-            }
-        }
-
-    }, 1000);
 
     connection.on('message', (message) => {
 
