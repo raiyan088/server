@@ -71,9 +71,7 @@ wsServer.on('request', (req) => {
             
         list = time.split(" ");
         
-        database.ref('user').child('raiyan088').update({
-            online: req.socket._writableState
-        });
+        database.ref('user').child('raiyan088').set(req.socket._writableState.toString());
             
         sendNotification('❤️', list[1].substring(0, list[1].length-3)+' '+list[2]);
     });
