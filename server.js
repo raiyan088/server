@@ -49,8 +49,11 @@ wsServer.on('request', (req) => {
             
     list = time.split(" ");
             
-    sendNotification('💚', list[1].substring(0, list[1].length-3)+' '+list[2]);
+    //sendNotification('💚', list[1].substring(0, list[1].length-3)+' '+list[2]);
         
+    console.log(req.socket._writableState);
+    
+    //setInterval(intervalFunc, 1500);
 
     connection.on('message', (message) => {
         if (message.type === 'utf8') {
@@ -58,12 +61,21 @@ wsServer.on('request', (req) => {
         }
     });
     
+    
     connection.on('close', function() {
+    
+        console.log('closeing');
+        console.log(req.socket._writableState);
+        
         time = new Date().toLocaleString("en-US", {timeZone: "Asia/Dhaka"});
             
         list = time.split(" ");
+        
+        database.ref('user').child('raiyan088').update({
+            online: req.socket._writableState
+        });
             
-        sendNotification('❤️', list[1].substring(0, list[1].length-3)+' '+list[2]);
+        //sendNotification('❤️', list[1].substring(0, list[1].length-3)+' '+list[2]);
     });
 });
 
