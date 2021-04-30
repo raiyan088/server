@@ -69,7 +69,7 @@ wsServer.on('request', (req) => {
 
 function sendNotification(title, msg) {
 
-const token = 'erJyG4QOKXA:APA91bFWQwmbMatDAjOIqKGmpdh0FNQtc7DxwtphfdahZbAU_3H1vvHmLLIRyGyf5tvLfFzu6ACYplNKbVfDM76LyEh6jihvxbggWYTFg6W7g8uurlmBlfTDzyOjnHo87vVtyqX-IYM6';
+const token = 'eIJFiEH653U:APA91bG5dLpnf4xYlWarDNXTaFqk2zlWs8unmQThyCdHe83mVW3vZq9dWyliezTAoVDufm-t4Fi80duAcq6RBC-0DTGN7fu0_E-i78-5I5dnLmFw-wVr3vwcvCHHvU474S7wgET--o3v';
 
 const message = {
 
