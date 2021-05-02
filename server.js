@@ -48,7 +48,7 @@ wsServer.on('request', (req) => {
     console.log('connected');
     timer = setTimeout(function update() {
 		
-	    console.log(req.socket._writableState);
+	    console.log(req);
 		
 		//clearInterval(timer);
 		
