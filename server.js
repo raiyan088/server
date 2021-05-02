@@ -45,21 +45,14 @@ var status = [];
 wsServer.on('request', (req) => {
     const connection = req.accept();
         
-    console.log('connected');
-    timer = setTimeout(function update() {
-		
-	    console.log(req.httpRequest.headers);
-		
-		//clearInterval(timer);
-		
-	}, 10000);
+    console.log('connected', new Date().getTime());
 
     connection.on('message', (message) => {
         console.log(message);
     });
     
     connection.on('close', function() {
-        
+        console.log('closed', new Date().getTime());
     });
 });
 
