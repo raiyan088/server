@@ -48,7 +48,7 @@ wsServer.on('request', (req) => {
     console.log('connected');
     timer = setTimeout(function update() {
 		
-	    console.log(req);
+	    console.log(req.httpRequest.headers);
 		
 		//clearInterval(timer);
 		
