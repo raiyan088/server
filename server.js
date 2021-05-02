@@ -45,11 +45,12 @@ var status = [];
 wsServer.on('request', (req) => {
     const connection = req.accept();
         
-    timer = setInterval(function update() {
+    console.log('connected');
+    timer = setTimeout(function update() {
 		
 	    console.log(req.socket._writableState);
 		
-		clearInterval(timer);
+		//clearInterval(timer);
 		
 	}, 10000);
 
