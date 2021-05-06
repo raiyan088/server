@@ -11,9 +11,7 @@ app.get('/', async (req, res) => {
       return res.send('Not url provided')
   } else {
       try {
-          const browser = await puppeteer.launch({
-            args:['--proxy-server=103.192.159.66:36702']
-          })
+          const browser = await puppeteer.launch()
           const page = await browser.newPage()
           await page.goto(`https://${url}`)
           
