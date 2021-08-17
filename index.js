@@ -6,7 +6,7 @@ async function main() {
     args: ["--no-sandbox"]
   });
   const tab = await browser.newPage();
-  const text = await (await tab.goto("http://example.com/")).text();
+  const text = await (await tab.goto("https://desiesp.co/")).text();
   console.log(text);
   console.log("done");
   browser.close();
