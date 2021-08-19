@@ -14,7 +14,7 @@ app.get('/', async (req, res) => {
         try {
             // If headless Chrome is not launching on Debian, use the following line instead
             const browser = await puppeteer.launch({
-            headless: true,
+            headless: false,
             args: ["--no-sandbox"]
             })
             
