@@ -101,7 +101,6 @@ module.exports = class {
                 let userId = rawData.messageMetadata.actorFbId
                 let msg = rawData.body
                 let send = 'M'
-                let panding = false
                 
                 if(userId === this.uid) {
                     send = 'M'
@@ -110,114 +109,107 @@ module.exports = class {
                 }
                 
                 if(msg) {
-                    if(!rawData.attachments.length) {
-                        ret = {
-                          body: send+'★T★'+msg,
-                          send: Object.values(rawData.messageMetadata.threadKey)[0],
-                          time: time+''
-                        }
-                        callback(ret)
-                    } else {
-                        panding = true
+                    ret = {
+                      body: send+'★T★'+msg,
+                      send: Object.values(rawData.messageMetadata.threadKey)[0]+'',
+                      time: time+''
                     }
+                    time++
+                    callback(ret)
                 }
 	            
                 if(rawData.attachments.length) {
                     for(var i=0; i<rawData.attachments.length; i++) {
                         let data = rawData.attachments[i]
-                        if(data.mimeType) {
-                            let mercury = data.mercury
-                                if(mercury) {
-                                    let blob_attachment = mercury.blob_attachment
-                                    if(blob_attachment) {
-                                    	let body = null
-                                        if(data.mimeType.startsWith('image')) {
-                                        	let large_preview = blob_attachment.large_preview
-                                        	if(large_preview) {
-	                                        	let uri = large_preview.uri
-	                                        	if(uri) {
-	                                        	    body = send+'★I★'+uri
-	                                            }
-                                            }
-			                            } else if(data.mimeType.startsWith('video')) {
-			                                let playable_url = blob_attachment.playable_url
-                                        	if(playable_url) {
-                                        	    body = send+'★V★'+playable_url
-                                            }
-			                            } else if(data.mimeType.startsWith('audio')) {
-			                                let playable_url = blob_attachment.playable_url
-                                        	if(playable_url) {
-                                        	    body = send+'★A★'+playable_url
-                                            }
-			                            }
-			
-										if(body) {
-											ret = {
-				                              body: body,
-				                              send: Object.values(rawData.messageMetadata.threadKey)[0],
-				                              time: time+''
-				                            }
-											time++
-											callback(ret)
-										}
-                                    }
-                                }
-                        }
                         
-                        if(i == rawData.attachments.length -1 && panding) {
-                            ret = {
-                              body: send+'★T★'+msg,
-                              send: Object.values(rawData.messageMetadata.threadKey)[0],
-                              time: time+''
+                        if(data.mimeType) {
+                            if(data.mercury && data.mercury.blob_attachment) {
+                                let blob_attachment = data.mercury.blob_attachment
+                            	let body = null
+                                if(data.mimeType.startsWith('image') && blob_attachment.large_preview && blob_attachment.large_preview.uri) {
+                                	body = send+'★I★'+blob_attachment.large_preview.uri
+	                            } else if(data.mimeType.startsWith('video') && blob_attachment.playable_url) {
+	                                body = send+'★V★'+blob_attachment.playable_url
+	                            } else if(data.mimeType.startsWith('audio') && blob_attachment.playable_url) {
+	                                body = send+'★A★'+blob_attachment.playable_url
+	                            }
+	
+								if(body) {
+									ret = {
+		                              body: body,
+		                              send: Object.values(rawData.messageMetadata.threadKey)[0]+'',
+		                              time: time+''
+		                            }
+									time++
+									callback(ret)
+								}
                             }
-                            callback(ret)
                         }
                     }
                 }
 	            break
 	
 	          case 'ClientPayload':
-	            let clientPayload = JSON.parse(
-	              Buffer.from(rawData.payload).toString()
-	            )
-	
-	            console.log(clientPayload)
-	            // FIXME: DEBUG ONLY
-	            if (
-	              Object.keys(clientPayload).filter(v => v != 'deltas').length > 0
-	            ) {
-	              
-	            }
-	
-	            if (clientPayload.deltas && clientPayload.deltas.length > 1) {
-	              
-	            }
-	
-	            let deltaType = Object.keys(clientPayload.deltas[0])[0]
-	            let delta = clientPayload.deltas[0][deltaType]
-	
-	            
-	
-	
-	            switch (deltaType) {
-	              case 'deltaRecallMessageData':
-	                ret = {
-	                  type: 'message_unsend',
-	                  thread: Object.values(delta.threadKey)[0],
-	                  messageId: delta.messageID,
-	                  timestamp: delta.deletionTimestamp
+                let clientPayload = JSON.parse(Buffer.from(rawData.payload).toString())
+                
+                if(clientPayload.deltas && clientPayload.deltas.length) {
+	                let deltaType = Object.keys(clientPayload.deltas[0])[0]
+	                let delta = clientPayload.deltas[0][deltaType]
+	                if(deltaType == 'deltaMessageReply') {
+	                    if(delta.repliedToMessage && delta.repliedToMessage.messageMetadata) {
+	                       let replyTime = delta.repliedToMessage.messageMetadata.timestamp
+	                       if(delta.message) {
+	                           let msgSend = 'M'
+	                           let msgTime = delta.message.messageMetadata.timestamp
+	                           if(delta.message.messageMetadata.actorFbId === this.uid) {
+                                   msgSend = 'M'
+                                } else {
+                                   msgSend = 'Y'
+                                }
+				                if(delta.message.attachments.length) {
+				                    for(var i=0; i<delta.message.attachments.length; i++) {
+				                        let data = delta.message.attachments[i]
+				                        
+				                        if(data.mimeType) {
+				                            if(data.mercuryJSON) {
+						                        let mercuryJSON = JSON.parse(data.mercuryJSON)
+						                        if(mercuryJSON.blob_attachment) {
+					                                let blob_attachment = data.mercuryJSON.blob_attachment
+					                            	let body = null
+					                                if(data.mimeType.startsWith('image') && blob_attachment.large_preview && blob_attachment.large_preview.uri) {
+					                                	body = msgSend+'★R★I★'+replyTime+'★'+blob_attachment.large_preview.uri
+						                            } else if(data.mimeType.startsWith('video') && blob_attachment.playable_url) {
+						                                body = msgSend+'★R★V★'+replyTime+'★'+blob_attachment.playable_url
+						                            } else if(data.mimeType.startsWith('audio') && blob_attachment.playable_url) {
+						                                body = msgSend+'★R★A★'+replyTime+'★'+blob_attachment.playable_url
+						                            }
+						
+													if(body) {
+														ret = {
+							                              body: body,
+							                              send: Object.values(delta.message.messageMetadata.threadKey)[0]+'',
+							                              time: msgTime+''
+							                            }
+														msgTime++
+														callback(ret)
+													}
+												}
+				                            }
+				                        }
+				                    }
+				                } else {
+		                            ret = {
+	                                  body: msgSend+'★R★T★'+replyTime+'★'+delta.message.body,
+	                                  send: Object.values(delta.message.messageMetadata.threadKey)[0]+'',
+	                                  time: msgTime+''
+	                                }
+	                                callback(ret)
+	                        }
+	                    }
 	                }
-	                break
-	              default:
 	                
 	            }
-	
 	            break
-	          // { deltas: [ { deltaMessageReply: [Object] } ] }
-	          // { deltas: [ { deltaMessageReaction: [Object] } ] }
-	          // { deltas: [ { deltaUpdateThreadTheme: [Object] } ] }
-	          // { deltas: [ { deltaRecallMessageData: [Object] } ] }
-	
 	          default:
 	            return
 	        }
