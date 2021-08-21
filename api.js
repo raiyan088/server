@@ -224,6 +224,7 @@ module.exports = class {
 													}
 					                            }
 						                    }
+						                }
 				                    }
 				                } else {
 		                            ret = {
