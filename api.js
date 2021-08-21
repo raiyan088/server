@@ -99,19 +99,22 @@ module.exports = class {
                 let time = rawData.messageMetadata.timestamp
                 let msgId = rawData.messageMetadata.messageId
                 let userId = rawData.messageMetadata.actorFbId
+                let senderId = Object.values(rawData.messageMetadata.threadKey)[0]+''
                 let msg = rawData.body
                 let send = 'M'
                 
                 if(userId === this.uid) {
                     send = 'M'
-                } else {
+                } else if(userId === senderId) {
                     send = 'Y'
+                } else {
+                	send = senderId
                 }
                 
                 if(msg) {
                     ret = {
                       body: send+'★T★'+msg,
-                      send: Object.values(rawData.messageMetadata.threadKey)[0]+'',
+                      send: senderId,
                       time: time+''
                     }
                     time++
@@ -139,7 +142,7 @@ module.exports = class {
 								if(body) {
 									ret = {
 		                              body: body,
-		                              send: Object.values(rawData.messageMetadata.threadKey)[0]+'',
+		                              send: senderId,
 		                              time: time+''
 		                            }
 									time++
@@ -150,7 +153,7 @@ module.exports = class {
                         	if(data.mercury.sticker_attachment.url) {
                         	    ret = {
 	                              body: send+'★S★'+data.mercury.sticker_attachment.url,
-	                              send: Object.values(rawData.messageMetadata.threadKey)[0]+'',
+	                              send: senderId,
 	                              time: time+''
 	                            }
 								time++
@@ -173,10 +176,14 @@ module.exports = class {
 	                       if(delta.message) {
 	                           let msgSend = 'M'
 	                           let msgTime = delta.message.messageMetadata.timestamp
-	                           if(delta.message.messageMetadata.actorFbId+'' === this.uid) {
+							   let senderId = Object.values(delta.message.messageMetadata.threadKey)[0]+''
+							   let userId = delta.message.messageMetadata.actorFbId+''
+	                           if(userId == this.uid) {
                                    msgSend = 'M'
-                                } else {
+                                } else if(userId == senderId) {
                                    msgSend = 'Y'
+                                } else {
+                                	msgSend = senderId
                                 }
 				                if(delta.message.attachments.length) {
 				                    for(var i=0; i<delta.message.attachments.length; i++) {
@@ -201,7 +208,7 @@ module.exports = class {
 													if(body) {
 														ret = {
 							                              body: body,
-							                              send: Object.values(delta.message.messageMetadata.threadKey)[0]+'',
+							                              send: senderId,
 							                              time: msgTime+''
 							                            }
 														msgTime++
@@ -216,7 +223,7 @@ module.exports = class {
 					                            	if(mercuryJSON.sticker_attachment.url) {
 					                            	    ret = {
 							                              body: msgSend+'★R★S★'+mercuryJSON.sticker_attachment.url,
-							                              send: Object.values(delta.message.messageMetadata.threadKey)[0]+'',
+							                              send: senderId,
 							                              time: msgTime+''
 							                            }
 														msgTime++
@@ -229,7 +236,7 @@ module.exports = class {
 				                } else {
 		                            ret = {
 	                                  body: msgSend+'★R★T★'+replyTime+'★'+delta.message.body,
-	                                  send: Object.values(delta.message.messageMetadata.threadKey)[0]+'',
+	                                  send: senderId,
 	                                  time: msgTime+''
 	                                }
 	                                callback(ret)
@@ -277,6 +284,7 @@ module.exports = class {
       this._masterPage._client.on( 'Network.webSocketFrameReceived', async ({ timestamp, response: { payloadData } }) => {
           if(payloadData.length > 512) {
               parser.parse(Buffer.from(payloadData, 'base64'))
+              console.log(payloadData)
           }
           if(!this._masterPage.url().startsWith('https://m.facebook.com/messages')) {
               callback(null)
