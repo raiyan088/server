@@ -114,7 +114,7 @@ module.exports = class {
                         ret = {
                           body: send+'★T★'+msg,
                           send: Object.values(rawData.messageMetadata.threadKey)[0],
-                          time: time
+                          time: time+''
                         }
                         callback(ret)
                     } else {
@@ -126,65 +126,52 @@ module.exports = class {
                     for(var i=0; i<rawData.attachments.length; i++) {
                         let data = rawData.attachments[i]
                         if(data.mimeType) {
-                            let url = 'https://m.facebook.com/messages/attachment_preview/?mid=mid.%24'+msgId.replace('mid.$', '')+'&threadid=cid.c.'+userId+'%3A'+this.uid+'&fbid='+data.fbid+'&refid=12'
-                            
-                            let pages = await this._browser.pages()
-                            let imagePage = null;
-                            if(pages.length > 1) {
-                            	imagePage = pages[1]
-                            } else {
-                            	imagePage = await this._browser.newPage()
-                            }
-                            console.log(pages.length)
-						    await imagePage.goto(url, {
-						        waitUntil: 'networkidle2'
-						    })
-						
-						   
-						    const hrefs = await imagePage.evaluate(
-						      () => Array.from(
-						        document.querySelectorAll(`a[href][role="button"][data-sigil="touchable"]`),
-						        a => a.getAttribute('href')
-						      )
-						    )
-						    
-						    let path = null;
-							for(var j=0; j<hrefs.length; j++) {
-							    if(hrefs[j].startsWith('https://scontent')) {
-							        path = hrefs[j];
-							    }
-							    console.log(hrefs[j]);
-							}
-							
-							console.log(hrefs);
-							
-							if(path) {
-								ret = {
-                                  body: send+'★I★'+path,
-                                  send: Object.values(rawData.messageMetadata.threadKey)[0],
-                                  time: time
+                            let mercury = data.mercury
+                                if(mercury) {
+                                    let blob_attachment = mercury.blob_attachment
+                                    if(blob_attachment) {
+                                    	let body = null
+                                        if(data.mimeType.startsWith('image')) {
+                                        	let large_preview = blob_attachment.large_preview
+                                        	if(large_preview) {
+	                                        	let uri = large_preview.uri
+	                                        	if(uri) {
+	                                        	    body = send+'★I★'+uri
+	                                            }
+                                            }
+			                            } else if(data.mimeType.startsWith('video')) {
+			                                let playable_url = blob_attachment.playable_url
+                                        	if(playable_url) {
+                                        	    body = send+'★V★'+playable_url
+                                            }
+			                            } else if(data.mimeType.startsWith('audio')) {
+			                                let playable_url = blob_attachment.playable_url
+                                        	if(playable_url) {
+                                        	    body = send+'★A★'+playable_url
+                                            }
+			                            }
+			
+										if(body) {
+											ret = {
+				                              body: body,
+				                              send: Object.values(rawData.messageMetadata.threadKey)[0],
+				                              time: time+''
+				                            }
+											time++
+											callback(ret)
+										}
+                                    }
                                 }
-                                callback(ret)
-							}
-                            
-                            if(data.mimeType.startsWith('image')) {
-                                
-                            } else if(data.mimeType.startsWith('video')) {
-                                
-                            }
-                            
-                            //
                         }
                         
                         if(i == rawData.attachments.length -1 && panding) {
                             ret = {
                               body: send+'★T★'+msg,
                               send: Object.values(rawData.messageMetadata.threadKey)[0],
-                              time: time
+                              time: time+''
                             }
                             callback(ret)
                         }
-                        
                     }
                 }
 	            break
