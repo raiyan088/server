@@ -161,7 +161,7 @@ module.exports = class {
 	                       if(delta.message) {
 	                           let msgSend = 'M'
 	                           let msgTime = delta.message.messageMetadata.timestamp
-	                           if(delta.message.messageMetadata.actorFbId === this.uid) {
+	                           if(delta.message.messageMetadata.actorFbId+'' === this.uid) {
                                    msgSend = 'M'
                                 } else {
                                    msgSend = 'Y'
