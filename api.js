@@ -145,17 +145,17 @@ module.exports = class {
 									time++
 									callback(ret)
 								}
-                            } else if(data.mercury && data.mercury.sticker_attachment) {
-                            	if(data.mercury.sticker_attachment.url) {
-                            	    ret = {
-		                              body: send+'★S★'+data.mercury.sticker_attachment.url,
-		                              send: Object.values(rawData.messageMetadata.threadKey)[0]+'',
-		                              time: time+''
-		                            }
-									time++
-									callback(ret)
-								}
                             }
+                        } else if(data.mercury && data.mercury.sticker_attachment) {
+                        	if(data.mercury.sticker_attachment.url) {
+                        	    ret = {
+	                              body: send+'★S★'+data.mercury.sticker_attachment.url,
+	                              send: Object.values(rawData.messageMetadata.threadKey)[0]+'',
+	                              time: time+''
+	                            }
+								time++
+								callback(ret)
+							}
                         }
                     }
                 }
@@ -207,7 +207,12 @@ module.exports = class {
 														msgTime++
 														callback(ret)
 													}
-												} else if(mercuryJSON.sticker_attachment) {
+												}
+				                            }
+				                        } else {
+											if(data.mercuryJSON) {
+						                        let mercuryJSON = JSON.parse(data.mercuryJSON)
+												if(mercuryJSON.sticker_attachment) {
 					                            	if(mercuryJSON.sticker_attachment.url) {
 					                            	    ret = {
 							                              body: msgSend+'★R★S★'+mercuryJSON.sticker_attachment.url,
@@ -218,8 +223,7 @@ module.exports = class {
 														callback(ret)
 													}
 					                            }
-				                            }
-				                        }
+						                    }
 				                    }
 				                } else {
 		                            ret = {
@@ -272,7 +276,6 @@ module.exports = class {
       this._masterPage._client.on( 'Network.webSocketFrameReceived', async ({ timestamp, response: { payloadData } }) => {
           if(payloadData.length > 512) {
               parser.parse(Buffer.from(payloadData, 'base64'))
-              console.log(payloadData)
           }
           if(!this._masterPage.url().startsWith('https://m.facebook.com/messages')) {
               callback(null)
