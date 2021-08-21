@@ -1,39 +1,36 @@
-const express = require('express')
-const puppeteer = require('puppeteer')
-const replace = require('absolutify')
+const fs = require('fs');
+const path = require('path');
+const express=require('express');
 
-const app = express()
+const Client = require('./api');
 
-app.get('/', async (req, res) => {
-    const {url} = req.query
-    
-    if (!url) {
-        return res.send('Not url provided')
+const app = express();
+
+const session = fs.existsSync(path.join(__dirname, '.appstate.json'))
+  ? JSON.parse(fs.readFileSync(path.join(__dirname, '.appstate.json'), 'utf8'))
+  : null;
+
+const api = new Client();
+
+;(async () => {
+  await api.login(session, err => {
+    if(err) {
+	console.log('Logging Failed');
     } else {
-        // generate puppeteer screenshot 
-        try {
-            // If headless Chrome is not launching on Debian, use the following line instead
-            const browser = await puppeteer.launch({
-            headless: true,
-            args: ["--no-sandbox"]
-            })
-            
-            const page = await browser.newPage()
-            await page.goto(`https://${url}`)
-            
-            await page.waitForNavigation()
-            
-            let document = await page.evaluate(() => document.documentElement.outerHTML)
-            document = replace(document, `/?url=${url.split('/')[0]}`)
-            
-            return res.send(document)
-        } catch(err) {
-            console.log(err)
-            
-            return res.send(err)
-        }
+	console.log('Logging Success');
+
+        api.listen(json => {
+            console.log("LISTEN RESP", json)
+        });
     }
-})
+  });
 
+})()
 
-app.listen(process.env.PORT)
+app.get('/send', function(req, res) {
+    
+});
+
+app.listen(process.env.PORT || 3000, ()=>{
+    console.log("Listening on port 3000...");
+});
