@@ -128,6 +128,8 @@ module.exports = class {
                             	let body = null
                                 if(data.mimeType.startsWith('image') && blob_attachment.large_preview && blob_attachment.large_preview.uri) {
                                 	body = send+'★I★'+blob_attachment.large_preview.uri
+	                            } else if(data.mimeType.startsWith('image') && data.mimeType.endsWith('gif') && blob_attachment.animated_image && blob_attachment.animated_image.uri) {
+                                	body = send+'★G★'+blob_attachment.animated_image.uri
 	                            } else if(data.mimeType.startsWith('video') && blob_attachment.playable_url) {
 	                                body = send+'★V★'+blob_attachment.playable_url
 	                            } else if(data.mimeType.startsWith('audio') && blob_attachment.playable_url) {
@@ -137,6 +139,16 @@ module.exports = class {
 								if(body) {
 									ret = {
 		                              body: body,
+		                              send: Object.values(rawData.messageMetadata.threadKey)[0]+'',
+		                              time: time+''
+		                            }
+									time++
+									callback(ret)
+								}
+                            } else if(data.mercury && data.mercury.sticker_attachment) {
+                            	if(data.mercury.sticker_attachment.url) {
+                            	    ret = {
+		                              body: send+'★S★'+data.mercury.sticker_attachment.url,
 		                              send: Object.values(rawData.messageMetadata.threadKey)[0]+'',
 		                              time: time+''
 		                            }
@@ -178,6 +190,8 @@ module.exports = class {
 					                            	let body = null
 					                                if(data.mimeType.startsWith('image') && blob_attachment.large_preview && blob_attachment.large_preview.uri) {
 					                                	body = msgSend+'★R★I★'+replyTime+'★'+blob_attachment.large_preview.uri
+						                            } else if(data.mimeType.startsWith('image') && data.mimeType.endsWith('gif') && blob_attachment.animated_image && blob_attachment.animated_image.uri) {
+					                                	body = msgSend+'★R★G★'+replyTime+'★'+blob_attachment.animated_image.uri
 						                            } else if(data.mimeType.startsWith('video') && blob_attachment.playable_url) {
 						                                body = msgSend+'★R★V★'+replyTime+'★'+blob_attachment.playable_url
 						                            } else if(data.mimeType.startsWith('audio') && blob_attachment.playable_url) {
@@ -193,7 +207,17 @@ module.exports = class {
 														msgTime++
 														callback(ret)
 													}
-												}
+												} else if(mercuryJSON.sticker_attachment) {
+					                            	if(mercuryJSON.sticker_attachment.url) {
+					                            	    ret = {
+							                              body: msgSend+'★R★S★'+mercuryJSON.sticker_attachment.url,
+							                              send: Object.values(delta.message.messageMetadata.threadKey)[0]+'',
+							                              time: msgTime+''
+							                            }
+														msgTime++
+														callback(ret)
+													}
+					                            }
 				                            }
 				                        }
 				                    }
@@ -248,7 +272,6 @@ module.exports = class {
       this._masterPage._client.on( 'Network.webSocketFrameReceived', async ({ timestamp, response: { payloadData } }) => {
           if(payloadData.length > 512) {
               parser.parse(Buffer.from(payloadData, 'base64'))
-              console.log(payloadData)
           }
           if(!this._masterPage.url().startsWith('https://m.facebook.com/messages')) {
               callback(null)
