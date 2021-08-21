@@ -91,13 +91,42 @@ module.exports = class {
 	          case 'NoOp':
 	          case 'FolderCount':
 	          case 'ThreadFolder':
-	          case 'AdminTextMessage':
 	          case 'MessageDelete':
-	             return
-	
+				return
+	          case 'AdminTextMessage':
+				if(rawData.type && rawData.messageMetadata && rawData.type == 'messenger_call_log') {
+				     let timeCall = rawData.messageMetadata.timestamp
+				     let userIdCall = rawData.messageMetadata.actorFbId
+                     let senderIdCall = Object.values(rawData.messageMetadata.threadKey)[0]+''
+                     let msgCall = rawData.messageMetadata.adminText
+                     let sendCall = 'M'
+                
+                     if(userIdCall === this.uid) {
+                         sendCall = 'M'
+                     } else if(userIdCall === senderIdCall) {
+                         sendCall = 'Y'
+                     } else {
+                  	     sendCall = userIdCall
+                     }
+                     
+                     if(rawData.untypedData) {
+                         let body = null
+                         if(rawData.untypedData.video == '') {
+                             body = sendCall+'★C★A★'+rawData.untypedData.call_duration+'★'+msgCall
+                         } else {
+                             body = sendCall+'★C★V★'+rawData.untypedData.call_duration+'★'+msgCall
+                         }
+                         ret = {
+		                   body: body,
+		                   send: senderIdCall,
+		                   time: timeCall+''
+		                 }
+						 callback(ret)
+                     }
+				}
+	            break
 	          case 'NewMessage':
                 let time = rawData.messageMetadata.timestamp
-                let msgId = rawData.messageMetadata.messageId
                 let userId = rawData.messageMetadata.actorFbId
                 let senderId = Object.values(rawData.messageMetadata.threadKey)[0]+''
                 let msg = rawData.body
@@ -108,7 +137,7 @@ module.exports = class {
                 } else if(userId === senderId) {
                     send = 'Y'
                 } else {
-                	send = senderId
+                	send = userId
                 }
                 
                 if(msg) {
@@ -178,12 +207,12 @@ module.exports = class {
 	                           let msgTime = delta.message.messageMetadata.timestamp
 							   let senderId = Object.values(delta.message.messageMetadata.threadKey)[0]+''
 							   let userId = delta.message.messageMetadata.actorFbId+''
-	                           if(userId == this.uid) {
+	                           if(userId === this.uid) {
                                    msgSend = 'M'
-                                } else if(userId == senderId) {
+                                } else if(userId === senderId) {
                                    msgSend = 'Y'
                                 } else {
-                                	msgSend = senderId
+                                	msgSend = userId
                                 }
 				                if(delta.message.attachments.length) {
 				                    for(var i=0; i<delta.message.attachments.length; i++) {
@@ -284,7 +313,6 @@ module.exports = class {
       this._masterPage._client.on( 'Network.webSocketFrameReceived', async ({ timestamp, response: { payloadData } }) => {
           if(payloadData.length > 512) {
               parser.parse(Buffer.from(payloadData, 'base64'))
-              console.log(payloadData)
           }
           if(!this._masterPage.url().startsWith('https://m.facebook.com/messages')) {
               callback(null)
