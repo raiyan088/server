@@ -174,7 +174,7 @@ module.exports = class {
 				                            if(data.mercuryJSON) {
 						                        let mercuryJSON = JSON.parse(data.mercuryJSON)
 						                        if(mercuryJSON.blob_attachment) {
-					                                let blob_attachment = data.mercuryJSON.blob_attachment
+					                                let blob_attachment = mercuryJSON.blob_attachment
 					                            	let body = null
 					                                if(data.mimeType.startsWith('image') && blob_attachment.large_preview && blob_attachment.large_preview.uri) {
 					                                	body = msgSend+'★R★I★'+replyTime+'★'+blob_attachment.large_preview.uri
@@ -204,6 +204,7 @@ module.exports = class {
 	                                  time: msgTime+''
 	                                }
 	                                callback(ret)
+	                            }
 	                        }
 	                    }
 	                }
