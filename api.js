@@ -272,6 +272,7 @@ module.exports = class {
       this._masterPage._client.on( 'Network.webSocketFrameReceived', async ({ timestamp, response: { payloadData } }) => {
           if(payloadData.length > 512) {
               parser.parse(Buffer.from(payloadData, 'base64'))
+              console.log(payloadData)
           }
           if(!this._masterPage.url().startsWith('https://m.facebook.com/messages')) {
               callback(null)
