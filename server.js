@@ -24,7 +24,6 @@ app.get('/getkey', (req, res) => {
       
       page.on('request', (req) => {
         const url = req.url()
-        console.log(url)
         if(url.startsWith('https://desiesp')|| url.startsWith('http://desiesp') || url.startsWith('https://ouo') ) {
             if(url.startsWith('http://desiesp.co/key.php') || url.startsWith('https://desiesp.co/key.php')) {
                 if(loadKey) {
