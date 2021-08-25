@@ -41,7 +41,11 @@ let loadKey = true
       await page.goto('https://desiesp.co/getfreekeys.php', {
           waitUntil: 'networkidle2'
       })
-      
+ 
+      await page.screenshot({
+        path: "./screenshot.png",
+        fullPage: true
+      });
       
       await page.waitForSelector('#btn-main')
       await page.$$eval('#btn-main', elements => elements[0].click())
@@ -52,7 +56,10 @@ let loadKey = true
 })()
 
 app.get('/getkey', (req, res) => {
-
+    fs.readFile('screenshot.png', function(err, data) {
+      res.writeHead(200, {'Content-Type': 'image/jpeg'})
+      res.end(data)
+    })
 })
 
 app.listen(process.env.PORT || 3000, ()=>{
