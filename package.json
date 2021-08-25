@@ -1,8 +1,8 @@
 {
-  "name": "server",
+  "name": "facebook",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "api.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
@@ -11,9 +11,9 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.1",
-    "fs": "0.0.1-security",
+    "fs": "^0.0.1-security",
     "mqtt-packet": "^7.0.0",
     "path": "^0.12.7",
-    "puppeteer": "^9.1.0"
+    "puppeteer": "^10.2.0"
   }
 }
