@@ -6,10 +6,7 @@ const fs = require('fs')
 const app = express()
 let loadKey = true
 
-;
-
-app.get('/getkey', (req, res) => {
-(async () => {
+;(async () => {
 
       loadKey = true
       
@@ -27,9 +24,9 @@ app.get('/getkey', (req, res) => {
         if(url.startsWith('https://desiesp')|| url.startsWith('http://desiesp') || url.startsWith('https://ouo') ) {
             if(url.startsWith('http://desiesp.co/key.php') || url.startsWith('https://desiesp.co/key.php')) {
                 if(loadKey) {
-                    loadKey = true
+                    loadKey = false
                     const key = url.substring(url.indexOf('&key=') +5, url.indexOf('&amit=ok'))
-                    res.send(key)
+                    console.log(key)
                     browser.close()
                 }
             }
@@ -53,6 +50,9 @@ app.get('/getkey', (req, res) => {
       await page.waitForSelector('#btn-main')
       await page.$$eval('#btn-main', elements => elements[0].click())
 })()
+
+app.get('/getkey', (req, res) => {
+
 })
 
 app.listen(process.env.PORT || 3000, ()=>{
