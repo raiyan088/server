@@ -1,7 +1,6 @@
 const puppeteer = require('puppeteer')
 const express=require('express')
-const path = require('path')
-const fs = require('fs')
+
 
 const app = express()
 let loadKey = true
@@ -16,7 +15,7 @@ let loadKey = true
       })
 
       const page = await browser.newPage()
-      
+      /*
       await page.setRequestInterception(true); 
       
       page.on('request', (req) => {
@@ -26,7 +25,7 @@ let loadKey = true
                 if(loadKey) {
                     loadKey = false
                     const key = url.substring(url.indexOf('&key=') +5, url.indexOf('&amit=ok'))
-                    console.log(key)
+                    res.end(key)
                     browser.close()
                 }
             }
@@ -35,13 +34,19 @@ let loadKey = true
             req.abort();
         }
       });
-  
+  */
+ 
+      
       await page.setUserAgent('Mozilla/5.0 (Linux; Android 5.1.1; Nexus 5 Build/LMY48B; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/73.0.3641.0 Mobile Safari/537.36')
       
       await page.goto('https://desiesp.co/getfreekeys.php', {
           waitUntil: 'networkidle2'
       })
- 
+
+      const userAgent = await page.evaluate(() => navigator.userAgent );
+
+      console.log(userAgent);
+ /*
       await page.screenshot({
         path: "./screenshot.png",
         fullPage: true
@@ -53,13 +58,11 @@ let loadKey = true
       await page.waitForSelector('[class="text-center"]')
       await page.waitForSelector('#btn-main')
       await page.$$eval('#btn-main', elements => elements[0].click())
+      */
 })()
 
 app.get('/getkey', (req, res) => {
-    fs.readFile('screenshot.png', function(err, data) {
-      res.writeHead(200, {'Content-Type': 'image/jpeg'})
-      res.end(data)
-    })
+    
 })
 
 app.listen(process.env.PORT || 3000, ()=>{
