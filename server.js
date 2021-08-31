@@ -3,10 +3,6 @@ var request = require('request');
 
 const app = express()
 
-app.get('/', (req, res) => {
-
-})
-
 setInterval(function() {
     request.delete({
         url: 'https://api.heroku.com/apps/web-server-7878/dynos/',
