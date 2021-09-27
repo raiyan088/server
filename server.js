@@ -1,17 +1,19 @@
-const express = require('express')
-var request = require('request');
+const FacebookClient = require('./facebook-api');
 
-const app = express()
+const mFacebookApi = new FacebookClient();
 
-setInterval(function() {
-    request.delete({
-        url: 'https://api.heroku.com/apps/web-server-7878/dynos/',
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/vnd.heroku+json; version=3',
-            'Authorization': 'Bearer 3928f52c-fe11-4443-b31b-51dd294a79f1'
+
+;(async () => {
+    await mFacebookApi.login(err => {
+        if(err) {
+            console.log('Logging Failed');
+        } else {
+            console.log('Logging Success');
+            const mUserId = mFacebookApi.getCurrentUserID();
+            
+            mFacebookApi.listen(json => {
+                console.log(json);
+            });
         }
-    }, function(error, response, body) {});
-}, 5400000);
-
-app.listen(process.env.PORT || '3000')
+    });
+})()
