@@ -88,17 +88,20 @@ module.exports = class {
 
       const page = (this._masterPage = (await browser.pages())[0])
 
+/*
       await page.setRequestInterception(true)
 
       page.on('request', req => {
           
         const url = req.url()
+        req.continue()
+        /*
         if(url.startsWith('https://m.facebook.com/login.php') || url.startsWith('https://m.facebook.com/home.php') || url.startsWith('https://m.facebook.com/messages') || url.startsWith('https://static.xx.fbcdn.net/rsrc.php')) {
             req.continue()
         } else {
             req.abort()
         }
-      });
+      });*/
 
       if (session) {
         await page.setCookie(...session)
