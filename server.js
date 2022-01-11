@@ -2,7 +2,6 @@ const bodyParser = require("body-parser");
 const admin = require("firebase-admin");
 const request = require('request');
 const express=require('express');
-const uuid = require('uuid-v4');
 const path = require("path");
 const http = require('http');
 const fs = require("fs");
@@ -35,29 +34,27 @@ const storage = admin.storage().bucket();
 
 app.post('/download', function(req, res) {
     if(req.body.url != undefined && req.body.uid != undefined && req.body.user_id != undefined) {
-        const uid = req.body.uid;
-        const user_id = req.body.user_id;
+        const uploadTo = req.body.path;
+        const uuid = req.body.uuid;
         const sendReq = request.get(req.body.url);
-        const downloadPath = path.basename(sendReq.uri.pathname);
+        const downloadPath = path.basename(uploadTo);
         const file = fs.createWriteStream("download/"+downloadPath);
         sendReq.on('response', (response) => {
             if(response.statusCode == 200) {
                 sendReq.pipe(file);
                 file.on('finish', function() {
-                    var uploadTo = 'data/'+uid+'/'+user_id+'/'+downloadPath;
-                    var id = uuid();
                     storage.upload("download/"+downloadPath, {
                         destination: uploadTo,
                             uploadType: "media",
                             metadata: {
                               metadata: {
-                                firebaseStorageDownloadTokens: id
+                                firebaseStorageDownloadTokens: uuid
                               }
                             }
                           })
                           .then((data) => {
                               fs.unlink("download/"+downloadPath, function(err) {});
-                              res.send("https://firebasestorage.googleapis.com/v0/b/facebook-storage-001.appspot.com/o/" + encodeURIComponent(data[0].name) + "?alt=media&token="+id);
+                              res.send("success");
                           });
                 });
             }
