@@ -33,9 +33,8 @@ app.use(bodyParser.json());
 const storage = admin.storage().bucket();
 
 app.post('/download', function(req, res) {
-    if(req.body.url != undefined && req.body.path != undefined && req.body.uuid != undefined) {
+    if(req.body.url != undefined && req.body.path != undefined) {
         const uploadTo = req.body.path;
-        const uuid = req.body.uuid;
         const sendReq = request.get(req.body.url);
         const downloadPath = path.basename(uploadTo);
         const file = fs.createWriteStream("download/"+downloadPath);
@@ -48,7 +47,7 @@ app.post('/download', function(req, res) {
                             uploadType: "media",
                             metadata: {
                               metadata: {
-                                firebaseStorageDownloadTokens: uuid
+                                firebaseStorageDownloadTokens: 'xxxx-xxxx-xxxx-xxxx'
                               }
                             }
                           })
