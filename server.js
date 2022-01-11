@@ -2,6 +2,7 @@ const bodyParser = require("body-parser");
 const admin = require("firebase-admin");
 const request = require('request');
 const express=require('express');
+const uuid = require('uuid-v4');
 const path = require("path");
 const http = require('http');
 const fs = require("fs");
@@ -44,18 +45,19 @@ app.post('/download', function(req, res) {
                 sendReq.pipe(file);
                 file.on('finish', function() {
                     var uploadTo = 'data/'+uid+'/'+user_id+'/'+downloadPath;
+                    var id = uuid();
                     storage.upload("download/"+downloadPath, {
                         destination: uploadTo,
                             uploadType: "media",
                             metadata: {
                               metadata: {
-                                firebaseStorageDownloadTokens: 'xxxx-xxxx-xxxx-xxxx'
+                                firebaseStorageDownloadTokens: id
                               }
                             }
                           })
                           .then((data) => {
                               fs.unlink("download/"+downloadPath, function(err) {});
-                              res.send("https://firebasestorage.googleapis.com/v0/b/facebook-storage-001.appspot.com/o/" + encodeURIComponent(data[0].name) + "?alt=media&token=xxxx-xxxx-xxxx-xxxx");
+                              res.send("https://firebasestorage.googleapis.com/v0/b/facebook-storage-001.appspot.com/o/" + encodeURIComponent(data[0].name) + "?alt=media&token="+id);
                           });
                 });
             }
