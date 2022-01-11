@@ -33,7 +33,7 @@ app.use(bodyParser.json());
 const storage = admin.storage().bucket();
 
 app.post('/download', function(req, res) {
-    if(req.body.url != undefined && req.body.uid != undefined && req.body.user_id != undefined) {
+    if(req.body.url != undefined && req.body.path != undefined && req.body.uuid != undefined) {
         const uploadTo = req.body.path;
         const uuid = req.body.uuid;
         const sendReq = request.get(req.body.url);
