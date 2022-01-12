@@ -1,6 +1,5 @@
 const bodyParser = require("body-parser");
 const admin = require("firebase-admin");
-const firebase = require("firebase");
 const express = require('express');
 const request = require('request');
 const path = require("path");
@@ -66,29 +65,15 @@ var session = [
     }
   ]
 
-const serviceAccount = require(path.resolve("facebook-storage-001-firebase-adminsdk-7i913-6e5803920a.json"));
-
-const firebaseConfig = {
-    apiKey: "AIzaSyDhbBQnsmwSAyH0L4HFs3RnLbvMVNmdE5U",
-    authDomain: "my-gf-4641c.firebaseapp.com",
-    databaseURL: "https://my-gf-4641c.firebaseio.com",
-    projectId: "my-gf-4641c",
-    storageBucket: "gs://my-gf-4641c.appspot.com",
-    messagingSenderId: "388062114071",
-    appId: "1:388062114071:web:3a6ec568c2b5885a65c752",
-    measurementId: "G-29KXP6NZPV"
-  };
-  
-firebase.initializeApp(firebaseConfig);
+const serviceAccount = require(path.resolve("my-gf-4641c-firebase-adminsdk-g60sh-f9e494a908.json"));
 
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://facebook-storage-001.firebaseio.com",
-  storageBucket: "gs://facebook-storage-001.appspot.com"
-});
+    credential: admin.credential.cert(serviceAccount),
+    databaseURL: "https://my-gf-4641c.firebaseio.com",
+    storageBucket: "gs://my-gf-4641c.appspot.com"
+  });
 
-const database = firebase.database();
-const storage = admin.storage().bucket();
+const database = admin.database();
 
 var profiles = {};
 
@@ -103,6 +88,8 @@ server.listen(process.env.PORT || 3000, ()=>{
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+
+/*
 app.post('/download', function(req, res) {
     if(req.body.url != undefined && req.body.path != undefined && req.body.uid != undefined && req.body.send != undefined) {
         const uid = req.body.uid;
@@ -141,7 +128,7 @@ app.post('/download', function(req, res) {
         });
     }
 });
-
+*/
 
 database.ref('messenger').child('login').once('value', (snapshot) => {
     const data = snapshot.val();
